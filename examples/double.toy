@@ -1,14 +1,18 @@
-eachHelper := fn(xs, f, acc) {
-  if len(xs) == 0 {
-    return acc
-  }
-  newAcc := [f(xs[len(xs)-1]), ...acc]
-  return eachHelper(xs[:len(xs)-1], f, newAcc)
-}
+fmt := import("fmt")
 
 each := fn(xs, f) {
-  return eachHelper(xs, f, [])
+  helper := fn(xs, f, acc) {
+    if len(xs) == 0 {
+      return acc
+    }
+    newAcc := [f(xs[len(xs)-1]), ...acc]
+    return helper(xs[:len(xs)-1], f, newAcc)
+  }
+  return helper(xs, f, [])
 }
 
 arr := [1, 2, 3]
 x, y, z := each(arr, fn(x) => 2*x)
+
+// Should print "x=2 y=4 z=6"
+fmt.printfn("x=%d y=%d z=%d", x, y, z)
