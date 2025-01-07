@@ -142,6 +142,7 @@
   (#any-of? @_function
     "regexp.match" "regexp.compile" "regexp.find" "regexp.replace")
   (argument_list
+    .
     (argument
       [
         (raw_string_literal
