@@ -11,6 +11,10 @@
   function: (selector_expression
     field: (field_identifier) @function.method.call))
 
+; Constructors
+((tuple_literal
+  "tuple" @constructor))
+
 ; Operators
 [
   "--"
@@ -60,8 +64,8 @@
   (break_statement)
   (continue_statement)
   "immutable"
-  "tuple"
   "unpack"
+  "in"
 ] @keyword
 
 "fn" @keyword.function
