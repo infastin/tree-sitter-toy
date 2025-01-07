@@ -1,3 +1,5 @@
+; Based on tree-sitter-go.
+
 ; Identifiers
 (field_identifier) @property
 

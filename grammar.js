@@ -1,3 +1,5 @@
+// Based on tree-sitter-go.
+
 /// <reference types="tree-sitter-cli/dsl" />
 // @ts-check
 
