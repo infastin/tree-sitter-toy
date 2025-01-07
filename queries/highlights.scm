@@ -17,6 +17,11 @@
 ((tuple_literal
   "tuple" @constructor))
 
+(call_expression
+  (identifier) @constructor
+  (#any-of? @constructor
+    "error"))
+
 ; Operators
 [
   "--"
@@ -131,10 +136,6 @@
 
 ; Comments
 (comment) @comment @spell
-
-; Spell
-((interpreted_string_literal) @spell
-  (#not-has-parent? @spell import_spec))
 
 ; Regex
 (call_expression
