@@ -1,23 +1,17 @@
+; Identifiers
+(field_identifier) @property
+
+(identifier) @variable
+
 ; Function calls
-
 (call_expression
-  function: (identifier) @function)
-
-(call_expression
-  function: (identifier) @function.builtin
-  (#match? @function.builtin "^(typename|copy|len|append|delete|splice|insert|clear|format|range|error)$"))
+  function: (identifier) @function.call)
 
 (call_expression
   function: (selector_expression
-    field: (field_identifier) @function.method))
-
-; Identifiers
-
-(field_identifier) @property
-(identifier) @variable
+    field: (field_identifier) @function.method.call))
 
 ; Operators
-
 [
   "--"
   "-"
@@ -34,6 +28,8 @@
   "&"
   "&&"
   "&="
+  "&^"
+  "&^="
   "%"
   "%="
   "^"
@@ -54,47 +50,96 @@
   "|"
   "|="
   "||"
+  "?"
+  ":"
   "=>"
 ] @operator
 
 ; Keywords
-
 [
-  "break"
-  "continue"
-  "else"
-  "for"
-  "fn"
+  (break_statement)
+  (continue_statement)
   "immutable"
-  "unpack"
   "tuple"
-  "if"
-  "return"
-  "export"
-  "in"
-  "import"
+  "unpack"
 ] @keyword
 
+"fn" @keyword.function
+
+"return" @keyword.return
+
+"for" @keyword.repeat
+
+[
+  "import"
+  "export"
+] @keyword.import
+
+[
+  "if"
+  "else"
+] @keyword.conditional
+
+; Builtin functions
+((identifier) @function.builtin
+  (#any-of? @function.builtin
+    "typename" "copy" "len" "append" "delete" "splice" "insert" "clear"
+    "format" "range" "error"))
+
+; Delimiters
+
+[
+  "."
+  ","
+  ":"
+  ";"
+] @punctuation.delimiter
+
+[
+  "(" ")"
+  "{" "}"
+  "[" "]"
+] @punctuation.bracket
+
 ; Literals
+(interpreted_string_literal) @string
 
-[
-  (interpreted_string_literal)
-  (raw_string_literal)
-  (rune_literal)
-] @string
+(raw_string_literal) @string
 
-(escape_sequence) @escape
+(rune_literal) @string
 
-[
-  (int_literal)
-  (float_literal)
-  (imaginary_literal)
-] @number
+(escape_sequence) @string.escape
+
+(int_literal) @number
+
+(float_literal) @number.float
 
 [
   (true)
   (false)
+] @boolean
+
+[
   (undefined)
 ] @constant.builtin
 
-(comment) @comment
+; Comments
+(comment) @comment @spell
+
+; Spell
+((interpreted_string_literal) @spell
+  (#not-has-parent? @spell import_spec))
+
+; Regex
+(call_expression
+  (selector_expression) @_function
+  (#any-of? @_function
+    "regexp.match" "regexp.compile" "regexp.find" "regexp.replace")
+  (argument_list
+    (argument
+      [
+        (raw_string_literal
+          (raw_string_literal_content) @string.regexp)
+        (interpreted_string_literal
+          (interpreted_string_literal_content) @string.regexp)
+      ])))

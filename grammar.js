@@ -120,6 +120,7 @@ module.exports = grammar({
     _expression: $ => choice(
       $.unary_expression,
       $.binary_expression,
+      $.cond_expression,
       $.selector_expression,
       $.index_expression,
       $.slice_expression,
@@ -129,6 +130,9 @@ module.exports = grammar({
       $.array_literal,
       $.tuple_literal,
       $.func_literal,
+      $.immutable_expression,
+      $.unpack_expression,
+      $.import_expression,
       $._string_literal,
       $.int_literal,
       $.float_literal,
@@ -163,6 +167,8 @@ module.exports = grammar({
         )),
       ));
     },
+    
+    cond_expression: $ => seq('?', $._expression, ':', $._expression),
 
     selector_expression: $ => prec(PREC.primary, seq(
       field('operand', $._expression),
@@ -195,46 +201,38 @@ module.exports = grammar({
 
     argument_list: $ => seq(
       '(',
-      optional(commaSep1(choice($._expression, $.variadic_argument))),
+      optional(commaSep1($.argument)),
       ')',
     ),
 
-    variadic_argument: $ => prec.right(seq(
-      '...',
+    argument: $ => seq(
+      optional('...'),
       $._expression,
-    )),
+    ),
 
     map_literal: $ => prec(PREC.composite_literal, seq(
       '{',
-      optional(commaSep1($.map_element_literal)),
+      optional(commaSep1(seq(
+        field('key', choice(
+          $.identifier,
+          seq('[', $._expression, ']'),
+        )),
+        ':',
+        field('value', $._expression),
+      ))),
       '}',
     )),
 
-    map_element_literal: $ => seq(
-      field('key', choice(
-        $.identifier,
-        seq('[', $._expression, ']'),
-      )),
-      ':',
-      field('value', $._expression),
-    ),
-
     array_literal: $ => prec(PREC.composite_literal, seq(
       '[',
-      optional(commaSep1(seq(
-        optional('...'),
-        $._expression,
-      ))),
+      optional(commaSep1($.argument)),
       ']',
     )),
 
     tuple_literal: $ => prec(PREC.composite_literal, seq(
       'tuple',
       '(',
-      optional(commaSep1(seq(
-        optional('...'),
-        $._expression,
-      ))),
+      optional(commaSep1($.argument)),
       ')',
     )),
 
@@ -257,6 +255,17 @@ module.exports = grammar({
 
     short_func_body: $ => seq('=>', $._expression),
 
+    immutable_expression: $ => seq('immutable', '(', $._expression, ')'),
+
+    unpack_expression: $ => seq(
+      'unpack',
+      '(',
+      optional(commaSep1($.argument)),
+      ')',
+    ),
+
+    import_expression: $ => seq('import', '(', $._string_literal, ')'),
+
     expression_list: $ => commaSep1($._expression),
 
     block: $ => seq(
@@ -267,9 +276,9 @@ module.exports = grammar({
 
     empty_statement: _ => ';',
 
-    break_statement: $ => 'break',
+    break_statement: _ => 'break',
 
-    continue_statement: $ => 'continue',
+    continue_statement: _ => 'continue',
 
     return_statement: $ => seq('return', optional($.expression_list)),
 
