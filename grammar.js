@@ -62,12 +62,12 @@ module.exports = grammar({
     /\s/,
   ],
 
-  word: $ => $.identifier,
-
   inline: $ => [
     $._field_identifier,
     $._string_literal,
   ],
+
+  word: $ => $.identifier,
 
   supertypes: $ => [
     $._expression,
@@ -76,12 +76,9 @@ module.exports = grammar({
   ],
 
   rules: {
-    source_file: $ => repeat(choice(seq($._statement, terminator))),
+    source_file: $ => repeat(seq($._statement, terminator)),
 
-    _statement_list: $ => seq(
-      $._statement,
-      repeat(seq(terminator, $._statement)),
-    ),
+    _statement_list: $ => repeat1(seq($._statement, terminator)),
 
     _statement: $ => choice(
       $._simple_statement,
@@ -117,7 +114,7 @@ module.exports = grammar({
     assignment_statement: $ => seq(
       field('left', $.expression_list),
       field('operator', choice(...assignmentOperators)),
-      field('right', choice($.unpack_expression, $.expression_list)),
+      field('right', $.expression_list),
     ),
 
     _expression: $ => choice(
@@ -128,15 +125,15 @@ module.exports = grammar({
       $.slice_expression,
       $.call_expression,
       $.identifier,
-      $.builtin,
       $.map_literal,
       $.array_literal,
+      $.tuple_literal,
       $.func_literal,
       $._string_literal,
       $.int_literal,
       $.float_literal,
       $.rune_literal,
-      $.nil,
+      $.undefined,
       $.true,
       $.false,
       $.parenthesized_expression,
@@ -192,7 +189,7 @@ module.exports = grammar({
     )),
 
     call_expression: $ => prec(PREC.primary, seq(
-      field('function', choice($.builtin, $._expression)),
+      field('function', $._expression),
       field('arguments', $.argument_list),
     )),
 
@@ -231,6 +228,16 @@ module.exports = grammar({
       ']',
     )),
 
+    tuple_literal: $ => prec(PREC.composite_literal, seq(
+      'tuple',
+      '(',
+      optional(commaSep1(seq(
+        optional('...'),
+        $._expression,
+      ))),
+      ')',
+    )),
+
     func_literal: $ => seq(
       'fn',
       field('parameters', $.parameter_list),
@@ -251,8 +258,6 @@ module.exports = grammar({
     short_func_body: $ => seq('=>', $._expression),
 
     expression_list: $ => commaSep1($._expression),
-
-    unpack_expression: $ => seq('unpack', '(', $._expression, ')'),
 
     block: $ => seq(
       '{',
@@ -314,23 +319,6 @@ module.exports = grammar({
 
     _field_identifier: $ => alias($.identifier, $.field_identifier),
 
-    builtin: _ => choice(
-      'immutable',
-      'typename',
-      'copy',
-      'len',
-      'tuple',
-      'append',
-      'delete',
-      'splice',
-      'insert',
-      'clear',
-      'format',
-      'range',
-      'error',
-      'tuple',
-    ),
-
     _string_literal: $ => choice(
       $.raw_string_literal,
       $.interpreted_string_literal,
@@ -384,7 +372,7 @@ module.exports = grammar({
       '\'',
     )),
 
-    nil: _ => 'nil',
+    undefined: _ => 'undefined',
     true: _ => 'true',
     false: _ => 'false',
 

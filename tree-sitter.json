@@ -4,10 +4,12 @@
       "name": "toy",
       "camelcase": "Toy",
       "scope": "source.toy",
+      "path": ".",
       "file-types": [
-        ".toy"
+        "toy"
       ],
-      "injection-regex": "^toy$"
+      "injection-regex": "toy",
+      "highlights": "queries/highlights.scm"
     }
   ],
   "metadata": {

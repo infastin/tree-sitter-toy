@@ -1,0 +1,14 @@
+eachHelper := fn(xs, f, acc) {
+  if len(xs) == 0 {
+    return acc
+  }
+  newAcc := [f(xs[len(xs)-1]), ...acc]
+  return eachHelper(xs[:len(xs)-1], f, newAcc)
+}
+
+each := fn(xs, f) {
+  return eachHelper(xs, f, [])
+}
+
+arr := [1, 2, 3]
+x, y, z := each(arr, fn(x) => 2*x)

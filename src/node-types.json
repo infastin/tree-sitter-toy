@@ -12,10 +12,6 @@
         "named": true
       },
       {
-        "type": "builtin",
-        "named": true
-      },
-      {
         "type": "call_expression",
         "named": true
       },
@@ -52,10 +48,6 @@
         "named": true
       },
       {
-        "type": "nil",
-        "named": true
-      },
-      {
         "type": "parenthesized_expression",
         "named": true
       },
@@ -80,7 +72,15 @@
         "named": true
       },
       {
+        "type": "tuple_literal",
+        "named": true
+      },
+      {
         "type": "unary_expression",
+        "named": true
+      },
+      {
+        "type": "undefined",
         "named": true
       }
     ]
@@ -262,10 +262,6 @@
           {
             "type": "expression_list",
             "named": true
-          },
-          {
-            "type": "unpack_expression",
-            "named": true
           }
         ]
       }
@@ -393,11 +389,6 @@
         }
       ]
     }
-  },
-  {
-    "type": "builtin",
-    "named": true,
-    "fields": {}
   },
   {
     "type": "call_expression",
@@ -925,6 +916,21 @@
     }
   },
   {
+    "type": "tuple_literal",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": false,
+      "types": [
+        {
+          "type": "_expression",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "unary_expression",
     "named": true,
     "fields": {
@@ -960,21 +966,6 @@
           }
         ]
       }
-    }
-  },
-  {
-    "type": "unpack_expression",
-    "named": true,
-    "fields": {},
-    "children": {
-      "multiple": false,
-      "required": true,
-      "types": [
-        {
-          "type": "_expression",
-          "named": true
-        }
-      ]
     }
   },
   {
@@ -1173,16 +1164,8 @@
     "named": false
   },
   {
-    "type": "append",
-    "named": false
-  },
-  {
     "type": "break_statement",
     "named": true
-  },
-  {
-    "type": "clear",
-    "named": false
   },
   {
     "type": "comment",
@@ -1193,19 +1176,7 @@
     "named": true
   },
   {
-    "type": "copy",
-    "named": false
-  },
-  {
-    "type": "delete",
-    "named": false
-  },
-  {
     "type": "else",
-    "named": false
-  },
-  {
-    "type": "error",
     "named": false
   },
   {
@@ -1237,10 +1208,6 @@
     "named": false
   },
   {
-    "type": "format",
-    "named": false
-  },
-  {
     "type": "identifier",
     "named": true
   },
@@ -1249,15 +1216,7 @@
     "named": false
   },
   {
-    "type": "immutable",
-    "named": false
-  },
-  {
     "type": "in",
-    "named": false
-  },
-  {
-    "type": "insert",
     "named": false
   },
   {
@@ -1267,18 +1226,6 @@
   {
     "type": "interpreted_string_literal_content",
     "named": true
-  },
-  {
-    "type": "len",
-    "named": false
-  },
-  {
-    "type": "nil",
-    "named": true
-  },
-  {
-    "type": "range",
-    "named": false
   },
   {
     "type": "raw_string_literal_content",
@@ -1293,10 +1240,6 @@
     "named": true
   },
   {
-    "type": "splice",
-    "named": false
-  },
-  {
     "type": "true",
     "named": true
   },
@@ -1305,12 +1248,8 @@
     "named": false
   },
   {
-    "type": "typename",
-    "named": false
-  },
-  {
-    "type": "unpack",
-    "named": false
+    "type": "undefined",
+    "named": true
   },
   {
     "type": "{",
