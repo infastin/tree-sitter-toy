@@ -94,10 +94,6 @@
       {
         "type": "undefined",
         "named": true
-      },
-      {
-        "type": "unpack_expression",
-        "named": true
       }
     ]
   },
@@ -1030,21 +1026,6 @@
     }
   },
   {
-    "type": "unpack_expression",
-    "named": true,
-    "fields": {},
-    "children": {
-      "multiple": true,
-      "required": false,
-      "types": [
-        {
-          "type": "argument",
-          "named": true
-        }
-      ]
-    }
-  },
-  {
     "type": "\u0000",
     "named": false
   },
@@ -1323,10 +1304,6 @@
   {
     "type": "undefined",
     "named": true
-  },
-  {
-    "type": "unpack",
-    "named": false
   },
   {
     "type": "{",

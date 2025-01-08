@@ -133,7 +133,6 @@ module.exports = grammar({
       $.tuple_literal,
       $.func_literal,
       $.immutable_expression,
-      $.unpack_expression,
       $.import_expression,
       $._string_literal,
       $.int_literal,
@@ -258,13 +257,6 @@ module.exports = grammar({
     short_func_body: $ => seq('=>', $._expression),
 
     immutable_expression: $ => seq('immutable', '(', $._expression, ')'),
-
-    unpack_expression: $ => seq(
-      'unpack',
-      '(',
-      optional(commaSep1($.argument)),
-      ')',
-    ),
 
     import_expression: $ => seq('import', '(', $._string_literal, ')'),
 

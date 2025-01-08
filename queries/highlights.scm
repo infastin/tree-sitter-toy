@@ -71,7 +71,6 @@
   (break_statement)
   (continue_statement)
   "immutable"
-  "unpack"
   "in"
 ] @keyword
 
