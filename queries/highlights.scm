@@ -70,6 +70,7 @@
 [
   (break_statement)
   (continue_statement)
+  "defer"
   "immutable"
   "in"
 ] @keyword

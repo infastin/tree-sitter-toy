@@ -85,6 +85,7 @@ module.exports = grammar({
     _statement: $ => choice(
       $._simple_statement,
       $.return_statement,
+      $.defer_statement,
       $.export_statement,
       $.if_statement,
       $.for_statement,
@@ -275,6 +276,8 @@ module.exports = grammar({
     continue_statement: _ => 'continue',
 
     return_statement: $ => seq('return', optional($.expression_list)),
+
+    defer_statement: $ => seq('defer', $.call_expression),
 
     export_statement: $ => seq('export', $._expression),
 

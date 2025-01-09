@@ -140,6 +140,10 @@
         "named": true
       },
       {
+        "type": "defer_statement",
+        "named": true
+      },
+      {
         "type": "empty_statement",
         "named": true
       },
@@ -464,6 +468,21 @@
       "types": [
         {
           "type": "_expression",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "defer_statement",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "call_expression",
           "named": true
         }
       ]
@@ -1220,6 +1239,10 @@
   {
     "type": "continue_statement",
     "named": true
+  },
+  {
+    "type": "defer",
+    "named": false
   },
   {
     "type": "else",
