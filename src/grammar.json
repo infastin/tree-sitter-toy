@@ -316,7 +316,7 @@
         },
         {
           "type": "SYMBOL",
-          "name": "undefined"
+          "name": "nil"
         },
         {
           "type": "SYMBOL",
@@ -2919,9 +2919,9 @@
         ]
       }
     },
-    "undefined": {
+    "nil": {
       "type": "STRING",
-      "value": "undefined"
+      "value": "nil"
     },
     "true": {
       "type": "STRING",

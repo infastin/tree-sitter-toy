@@ -60,6 +60,10 @@
         "named": true
       },
       {
+        "type": "nil",
+        "named": true
+      },
+      {
         "type": "parenthesized_expression",
         "named": true
       },
@@ -89,10 +93,6 @@
       },
       {
         "type": "unary_expression",
-        "named": true
-      },
-      {
-        "type": "undefined",
         "named": true
       }
     ]
@@ -1305,6 +1305,10 @@
     "named": true
   },
   {
+    "type": "nil",
+    "named": true
+  },
+  {
     "type": "raw_string_literal_content",
     "named": true
   },
@@ -1323,10 +1327,6 @@
   {
     "type": "tuple",
     "named": false
-  },
-  {
-    "type": "undefined",
-    "named": true
   },
   {
     "type": "{",

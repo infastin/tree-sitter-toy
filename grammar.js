@@ -139,7 +139,7 @@ module.exports = grammar({
       $.int_literal,
       $.float_literal,
       $.rune_literal,
-      $.undefined,
+      $.nil,
       $.true,
       $.false,
       $.parenthesized_expression,
@@ -378,7 +378,7 @@ module.exports = grammar({
       '\'',
     )),
 
-    undefined: _ => 'undefined',
+    nil: _ => 'nil',
     true: _ => 'true',
     false: _ => 'false',
 

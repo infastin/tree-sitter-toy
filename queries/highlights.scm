@@ -131,7 +131,7 @@
 ] @boolean
 
 [
-  (undefined)
+  (nil)
 ] @constant.builtin
 
 ; Comments
