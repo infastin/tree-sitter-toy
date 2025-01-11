@@ -95,7 +95,7 @@
 ((identifier) @function.builtin
   (#any-of? @function.builtin
     "typename" "copy" "len" "append" "delete" "splice" "insert" "clear"
-    "format" "range" "min" "max"))
+    "format" "fail" "range" "min" "max"))
 
 ; Delimiters
 
