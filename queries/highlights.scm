@@ -20,7 +20,7 @@
 (call_expression
   (identifier) @constructor
   (#any-of? @constructor
-    "error"))
+    "error" "range"))
 
 ; Operators
 [
@@ -95,7 +95,7 @@
 ((identifier) @function.builtin
   (#any-of? @function.builtin
     "typename" "copy" "len" "append" "delete" "splice" "insert" "clear"
-    "format" "fail" "range" "min" "max"))
+    "format" "fail" "min" "max"))
 
 ; Delimiters
 
