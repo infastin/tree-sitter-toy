@@ -20,7 +20,7 @@
 (call_expression
   (identifier) @constructor
   (#any-of? @constructor
-    "error" "range"))
+    "string" "int" "bool" "float" "char" "bytes" "error" "range"))
 
 ; Operators
 [
