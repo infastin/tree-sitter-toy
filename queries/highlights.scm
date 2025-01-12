@@ -127,6 +127,9 @@
 
 (float_literal) @number.float
 
+(map_literal
+  (identifier) @variable.member)
+
 [
   (true)
   (false)
