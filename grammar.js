@@ -86,6 +86,7 @@ module.exports = grammar({
       $._simple_statement,
       $.return_statement,
       $.defer_statement,
+      $.labeled_statement,
       $.export_statement,
       $.if_statement,
       $.for_statement,
@@ -118,6 +119,12 @@ module.exports = grammar({
       field('left', $.expression_list),
       field('operator', choice(...assignmentOperators)),
       field('right', $.expression_list),
+    ),
+
+    labeled_statement: $ => seq(
+      field('label', alias($.identifier, $.label_name)),
+      ':',
+      $._statement,
     ),
 
     _expression: $ => choice(
@@ -203,38 +210,46 @@ module.exports = grammar({
 
     argument_list: $ => seq(
       '(',
-      optional(commaSep1($.argument)),
+      commaSep(seq(
+        optional('...'),
+        $._expression,
+      )),
+      optional(','),
       ')',
-    ),
-
-    argument: $ => seq(
-      optional('...'),
-      $._expression,
     ),
 
     map_literal: $ => prec(PREC.composite_literal, seq(
       '{',
-      optional(commaSep1(seq(
+      commaSep(seq(
         field('key', choice(
           $.identifier,
           seq('[', $._expression, ']'),
         )),
         ':',
         field('value', $._expression),
-      ))),
+      )),
+      optional(','),
       '}',
     )),
 
     array_literal: $ => prec(PREC.composite_literal, seq(
       '[',
-      optional(commaSep1($.argument)),
+      commaSep(seq(
+        optional('...'),
+        $._expression,
+      )),
+      optional(','),
       ']',
     )),
 
     tuple_literal: $ => prec(PREC.composite_literal, seq(
       'tuple',
       '(',
-      optional(commaSep1($.argument)),
+      commaSep(seq(
+        optional('...'),
+        $._expression,
+      )),
+      optional(','),
       ')',
     )),
 
@@ -246,10 +261,11 @@ module.exports = grammar({
 
     parameter_list: $ => seq(
       '(',
-      optional(commaSep1(seq(
+      commaSep(seq(
         optional('...'),
         field('name', $.identifier),
-      ))),
+      )),
+      optional(','),
       ')',
     ),
 
@@ -271,9 +287,9 @@ module.exports = grammar({
 
     empty_statement: _ => ';',
 
-    break_statement: _ => 'break',
+    break_statement: $ => seq('break', optional(alias($.identifier, $.label_name))),
 
-    continue_statement: _ => 'continue',
+    continue_statement: $ => seq('continue', optional(alias($.identifier, $.label_name))),
 
     return_statement: $ => seq('return', optional($.expression_list)),
 

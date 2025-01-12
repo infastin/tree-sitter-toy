@@ -5,6 +5,8 @@
 
 (identifier) @variable
 
+(label_name) @label
+
 ; Function calls
 (call_expression
   function: (identifier) @function.call)
@@ -68,8 +70,8 @@
 
 ; Keywords
 [
-  (break_statement)
-  (continue_statement)
+  "break"
+  "continue"
   "defer"
   "immutable"
   "in"
@@ -144,10 +146,9 @@
     "regexp.match" "regexp.compile" "regexp.find" "regexp.replace")
   (argument_list
     .
-    (argument
-      [
-        (raw_string_literal
-          (raw_string_literal_content) @string.regexp)
-        (interpreted_string_literal
-          (interpreted_string_literal_content) @string.regexp)
-      ])))
+    [
+      (raw_string_literal
+        (raw_string_literal_content) @string.regexp)
+      (interpreted_string_literal
+        (interpreted_string_literal_content) @string.regexp)
+    ]))
