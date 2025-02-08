@@ -228,14 +228,19 @@ module.exports = grammar({
 
     map_literal: $ => prec(PREC.composite_literal, seq(
       '{',
-      commaSep(seq(
-        field('key', choice(
-          $.identifier,
-          seq('[', $._expression, ']'),
-        )),
-        ':',
-        field('value', $._expression),
-      )),
+      commaSep(
+        choice(
+          seq(
+            field('key', choice(
+              $.identifier,
+              seq('[', $._expression, ']'),
+            )),
+            ':',
+            field('value', $._expression),
+          ),
+          seq('...', $._expression),
+        ),
+      ),
       optional(','),
       '}',
     )),
