@@ -310,7 +310,7 @@
         },
         {
           "type": "SYMBOL",
-          "name": "map_literal"
+          "name": "table_literal"
         },
         {
           "type": "SYMBOL",
@@ -956,7 +956,7 @@
         }
       ]
     },
-    "map_literal": {
+    "table_literal": {
       "type": "PREC",
       "value": -1,
       "content": {

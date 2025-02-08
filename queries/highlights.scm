@@ -140,8 +140,8 @@
 
 (float_literal) @number.float
 
-(map_literal
-  (identifier) @variable.member)
+(table_literal
+  key: ((identifier) @variable.member))
 
 [
   (true)

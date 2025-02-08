@@ -143,7 +143,7 @@ module.exports = grammar({
       $.slice_expression,
       $.call_expression,
       $.identifier,
-      $.map_literal,
+      $.table_literal,
       $.array_literal,
       $.tuple_literal,
       $.func_literal,
@@ -226,7 +226,7 @@ module.exports = grammar({
       ')',
     ),
 
-    map_literal: $ => prec(PREC.composite_literal, seq(
+    table_literal: $ => prec(PREC.composite_literal, seq(
       '{',
       commaSep(
         choice(
