@@ -1,11 +1,15 @@
-; Based on tree-sitter-go.
-
 ; Identifiers
 (field_identifier) @property
 
 (identifier) @variable
 
 (label_name) @label
+
+; Types
+((identifier) @type.builtin
+  (#any-of? @type.builtin
+    "type" "bool" "float" "int" "string" "bytes" "char"
+    "array" "table" "tuple" "range" "function"))
 
 ; Function calls
 (call_expression
@@ -22,7 +26,21 @@
 (call_expression
   (identifier) @constructor
   (#any-of? @constructor
-    "string" "int" "bool" "float" "char" "bytes" "error" "range"))
+    "type" "bool" "float" "int" "string" "bytes" "char" "array" "table" "range"))
+
+; Delimiters
+[
+  "."
+  ","
+  ":"
+  ";"
+] @punctuation.delimiter
+
+[
+  "(" ")"
+  "{" "}"
+  "[" "]"
+] @punctuation.bracket
 
 ; Operators
 [
@@ -64,18 +82,26 @@
   "|="
   "||"
   "?"
-  ":"
   "=>"
+  "??"
+  "??="
 ] @operator
+
+(cond_expression
+  [":"] @operator)
 
 ; Keywords
 [
   "break"
   "continue"
   "defer"
-  "immutable"
   "in"
 ] @keyword
+
+[
+  "try"
+  "throw"
+] @keyword.exception
 
 "fn" @keyword.function
 
@@ -85,7 +111,6 @@
 
 [
   "import"
-  "export"
 ] @keyword.import
 
 [
@@ -96,28 +121,16 @@
 ; Builtin functions
 ((identifier) @function.builtin
   (#any-of? @function.builtin
-    "typename" "copy" "len" "append" "delete" "splice" "insert" "clear"
-    "format" "fail" "min" "max"))
-
-; Delimiters
-
-[
-  "."
-  ","
-  ":"
-  ";"
-] @punctuation.delimiter
-
-[
-  "(" ")"
-  "{" "}"
-  "[" "]"
-] @punctuation.bracket
+    "typename" "clone" "freeze" "satisfies" "immutable"
+    "len" "append" "copy" "delete" "splice" "insert" "clear" "contains"
+    "format" "min" "max"))
 
 ; Literals
-(interpreted_string_literal) @string
+(string_literal) @string
 
 (raw_string_literal) @string
+
+(indented_string_literal) @string
 
 (rune_literal) @string
 
@@ -139,6 +152,10 @@
   (nil)
 ] @constant.builtin
 
+; String interpolation
+(string_interpolation
+  ["{" "}"] @punctuation.special)
+
 ; Comments
 (comment) @comment @spell
 
@@ -150,8 +167,10 @@
   (argument_list
     .
     [
+      (string_literal
+        (string_literal_content) @string.regexp)
       (raw_string_literal
         (raw_string_literal_content) @string.regexp)
-      (interpreted_string_literal
-        (interpreted_string_literal_content) @string.regexp)
+      (indented_string_literal
+        (indented_string_literal_content) @string.regexp)
     ]))

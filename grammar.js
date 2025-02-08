@@ -4,20 +4,27 @@
 // @ts-check
 
 const PREC = {
-  primary: 7,
-  unary: 6,
-  multiplicative: 5,
-  additive: 4,
-  comparative: 3,
-  and: 2,
-  or: 1,
+  primary: 8,
+  unary: 7,
+  multiplicative: 6,
+  additive: 5,
+  comparative: 4,
+  and: 3,
+  or: 2,
+  other: 1,
   composite_literal: -1,
 };
 
 const multiplicativeOperators = ['*', '/', '%', '<<', '>>', '&', '&^'];
 const additiveOperators = ['+', '-', '|', '^'];
+const otherOperators = ['??'];
 const comparativeOperators = ['==', '!=', '<', '<=', '>', '>='];
-const assignmentOperators = multiplicativeOperators.concat(additiveOperators).concat(':').map(operator => operator + '=').concat('=');
+const assignmentOperators = multiplicativeOperators.
+  concat(additiveOperators).
+  concat(otherOperators).
+  concat(':').
+  map(operator => operator + '=').
+  concat('=');
 
 const newline = /\n/;
 const terminator = choice(newline, ';', '\0');
@@ -86,8 +93,8 @@ module.exports = grammar({
       $._simple_statement,
       $.return_statement,
       $.defer_statement,
+      $.throw_statement,
       $.labeled_statement,
-      $.export_statement,
       $.if_statement,
       $.for_statement,
       $.break_statement,
@@ -140,8 +147,8 @@ module.exports = grammar({
       $.array_literal,
       $.tuple_literal,
       $.func_literal,
-      $.immutable_expression,
       $.import_expression,
+      $.try_expression,
       $._string_literal,
       $.int_literal,
       $.float_literal,
@@ -164,6 +171,7 @@ module.exports = grammar({
         [PREC.comparative, choice(...comparativeOperators)],
         [PREC.and, '&&'],
         [PREC.or, '||'],
+        [PREC.other, '??'],
       ];
 
       return choice(...table.map(([precedence, operator]) =>
@@ -177,7 +185,7 @@ module.exports = grammar({
       ));
     },
     
-    cond_expression: $ => seq('?', $._expression, ':', $._expression),
+    cond_expression: $ => prec.left(seq($._expression, '?', $._expression, ':', $._expression)),
 
     selector_expression: $ => prec(PREC.primary, seq(
       field('operand', $._expression),
@@ -264,18 +272,20 @@ module.exports = grammar({
       commaSep(seq(
         optional('...'),
         field('name', $.identifier),
+        optional('?'),
       )),
       optional(','),
       ')',
     ),
 
-    func_body: $ => choice($.short_func_body, $.block),
+    func_body: $ => choice(
+      seq('=>', prec.left($._expression)),
+      $.block,
+    ),
 
-    short_func_body: $ => seq('=>', $._expression),
+    import_expression: $ => prec(PREC.primary, seq('import', '(', $._string_literal, ')')),
 
-    immutable_expression: $ => seq('immutable', '(', $._expression, ')'),
-
-    import_expression: $ => seq('import', '(', $._string_literal, ')'),
+    try_expression: $ => prec(PREC.primary, seq('try', $.call_expression)),
 
     expression_list: $ => commaSep1($._expression),
 
@@ -295,7 +305,7 @@ module.exports = grammar({
 
     defer_statement: $ => seq('defer', $.call_expression),
 
-    export_statement: $ => seq('export', $._expression),
+    throw_statement: $ => seq('throw', optional($.expression_list)),
 
     if_statement: $ => seq(
       'if',
@@ -342,24 +352,50 @@ module.exports = grammar({
     _field_identifier: $ => alias($.identifier, $.field_identifier),
 
     _string_literal: $ => choice(
+      $.string_literal,
       $.raw_string_literal,
-      $.interpreted_string_literal,
+      $.indented_string_literal,
+    ),
+
+    string_literal: $ => seq(
+      '"',
+      repeat(choice(
+        alias(token.immediate(prec(2, /[^"\n\\{]+/)), $.string_literal_content),
+        $.string_interpolation,
+        $.escape_sequence,
+      )),
+      '"',
     ),
 
     raw_string_literal: $ => seq(
       '`',
-      alias(token(prec(1, /[^`]*/)), $.raw_string_literal_content),
+      repeat(choice(
+        alias(token.immediate(prec(2, /[^`\\]+/)), $.raw_string_literal_content),
+        $.string_interpolation,
+        $.escape_sequence,
+      )),
       '`',
     ),
 
-    interpreted_string_literal: $ => seq(
-      '"',
+    indented_string_literal: $ => seq(
+      "''",
       repeat(choice(
-        alias(token.immediate(prec(1, /[^"\n\\]+/)), $.interpreted_string_literal_content),
+        alias(token.immediate(prec(2, /[^'\\{]+/)), $.indented_string_literal_content),
+        seq(
+          alias("'", $.indented_string_literal_content),
+          choice(
+            alias(token.immediate(prec(2, /[^'\\{]+/)), $.indented_string_literal_content),
+            $.string_interpolation,
+            $.escape_sequence,
+          ),
+        ),
+        $.string_interpolation,
         $.escape_sequence,
       )),
-      token.immediate('"'),
+      "''",
     ),
+
+    string_interpolation: $ => seq('{', $._expression, '}'),
 
     escape_sequence: _ => token.immediate(seq(
       '\\',
