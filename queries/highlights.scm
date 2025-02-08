@@ -152,10 +152,7 @@
   (nil)
 ] @constant.builtin
 
-; Braces in literals
-(map_literal
-  ["{" "}"] @punctuation.special)
-
+; String interpolation
 (string_interpolation
   ["{" "}"] @punctuation.special)
 
